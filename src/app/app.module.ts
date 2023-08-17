@@ -3,10 +3,12 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { BehavioralHealthResourcesComponent } from './behavioral-health-resources/behavioral-health-resources.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    BehavioralHealthResourcesComponent
   ],
   imports: [
     BrowserModule,

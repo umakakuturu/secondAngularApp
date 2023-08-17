@@ -1,0 +1,17 @@
+<p>behavioral-health-resources works!</p>
+<h2>Behavioral Health Data</h2>
+
+<div>
+  <label *ngFor="let filter of filters">
+    <input type="checkbox" [value]="filter.id" (change)="filterBehavioralResources(filter.id, $event)">
+    {{ filter.name }}
+  </label>
+</div>
+
+<div *ngFor="let behavioralResource of behavioralResource">
+    <div *ngIf="behavioralResourceMatchesSelectedFilters(behavioralResource)">
+    {{ behavioralResource.name }}
+  </div>
+</div>
+
+
