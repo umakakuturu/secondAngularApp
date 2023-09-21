@@ -1,45 +1,32 @@
-expandContainer(event) {
-    var target = event.currentTarget;
-
-    let lobWrapElement = this._elementRef.nativeElement.querySelector('.lob_wrap');
-    if (lobWrapElement) {
-        let lowWrapChildren = lobWrapElement.querySelectorAll('li.lob.active');
-        for (let i = 0; i < lowWrapChildren.length; i++) {
-            lowWrapChildren[i].classList.remove('active');
-        }
-        let lowWrapSubChildren = lobWrapElement.querySelectorAll('li.sub_lob.active');
-        for (let i = 0; i < lowWrapSubChildren.length; i++) {
-            lowWrapSubChildren[i].classList.remove('active');
-        }
-    }
-
-    if (target) {
-        let targetElement = this._elementRef.nativeElement.querySelector(target.getAttribute('href'));
-        if (targetElement) {
-            let planElement = targetElement.closest('.plan');
-            let children = planElement.parentNode.children;
-            children.forEach((sibling) => {
-                if (sibling !== planElement) {
-                    let sElement = sibling.querySelector('.sub_lob');
-                    if (sElement) {
-                        sElement.style.display = 'none';
-                    }
-                }
-            });
-
-            let targetElementChildren = targetElement.parentNode.children;
-            targetElementChildren.forEach((c) => {
-                if (c !== targetElement && c.classList.contains('sub_lob')) {
-                    c.style.display = 'none';
-                    c.style.maxHeight = 'none';
-                    c.style.transition = 'max-height 0.5s ease-out';
-                    c.style.overflow = 'hidden';
-                    c.style.display = 'block';
-                    c.style.maxHeight = c.scrollHeight + 'px';
-                }
-            });
-
-            targetElement.parentNode.classList.add('active');
-        }
-    }
-}
+<!-- Updated HTML with unique IDs for medical links -->
+<nav *ngIf="requiredDataLoaded">
+    <ul id="planChoice" class="lob_wrap col-xs-12 col-sm-3 hidd_sm nill">
+        <div class="plan" *ngFor="let plan of sidebarPlans">   
+            <li class="lob ellipsis" *ngIf="sidebarPlans?.length > 1">
+                <b class="arrowInd hide">&gt;&nbsp;</b>
+                <a class="nav-link-plan-name"
+                    [routerLink]="['/MyCoverage', plan?.attributes?.id]"
+                    [innerHtml]="plan?.groupName"
+                    (click)="expandContainer($event)"></a>
+            </li> 
+            <li class="sub_lob" *ngFor="let membership of plan?.memberships">
+                <ng-container *ngIf="!membership?.isSpendingAccount">
+                    <b class="arrowInd hide">&gt;&nbsp;</b>
+                    <!-- Update the ID attribute for the medical link -->
+                    <a id="{{plan?.attributes?.id}}-{{membership?.attributes?.id}}-medical"
+                        [attr.aria-label]="membership?.attributes?.coverageTypeDescription === i18nCoverage.messages.text_bcc_coverage ? i18nCoverage.messages.link_bcc_coverage_arialabel : null"
+                        [attr.data-analytics]="membership?.attributes?.coverageTypeDescription === i18nCoverage.messages.text_bcc_coverage ? i18nCoverage.messages.link_bcc_coverage_dataanalytics : null"
+                        [routerLink]="['/MyCoverage', plan?.attributes?.id, membership?.attributes?.id, 'medical']"
+                        (click)="onClick($event)">Medical</a>
+                </ng-container>
+                <ng-container *ngIf="membership?.isSpendingAccount">
+                    <b class="arrowInd hide">&gt;&nbsp;</b>
+                    <!-- Update the ID attribute for the spending accounts link -->
+                    <a id="{{plan?.attributes?.id}}-{{membership?.attributes?.id}}-spending-accounts"
+                        [routerLink]="['/MyCoverage', plan?.attributes?.id, membership?.attributes?.id, 'spendingaccounts']"
+                        (click)="onClick($event)">Spending Accounts</a>
+                </ng-container>
+            </li>
+        </div>
+    </ul>
+</nav>
